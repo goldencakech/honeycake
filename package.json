@@ -1,0 +1,13 @@
+{
+  "name": "honeycake-monorepo",
+  "version": "1.0.0",
+  "description": "HoneyCake Smart Self-Ordering Cafe - Decoupled Architecture (Node.js Express + Vue.js)",
+  "scripts": {
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev"
+  },
+  "keywords": ["self-ordering", "cafe", "vuejs", "express", "prisma", "postgresql", "supabase"],
+  "author": "HoneyCake Team",
+  "license": "MIT"
+}

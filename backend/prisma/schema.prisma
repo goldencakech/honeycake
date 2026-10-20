@@ -1,0 +1,82 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  admin
+  staff
+}
+
+enum SessionStatus {
+  ACTIVE
+  BILL_REQUESTED
+  CLOSED
+}
+
+enum PaymentMethod {
+  MBANKING @map("M-Banking")
+  EWALLET  @map("E-Wallet")
+  CASHIER  @map("Cashier")
+}
+
+enum OrderStatus {
+  PENDING
+  PREPARING
+  READY
+  DELIVERED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(staff)
+  createdAt DateTime @default(now())
+
+  @@map("users")
+}
+
+model TableSession {
+  id            String         @id @default(uuid())
+  tableNumber   Int
+  sessionToken  String         @unique
+  status        SessionStatus  @default(ACTIVE)
+  paymentMethod PaymentMethod?
+  createdAt     DateTime       @default(now())
+  closedAt      DateTime?
+  orders        Order[]
+
+  @@map("table_sessions")
+}
+
+model Menu {
+  id          String   @id @default(uuid())
+  name        String
+  category    String
+  price       Int
+  description String?
+  imageUrl    String?
+  isAvailable Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  @@map("menus")
+}
+
+model Order {
+  id          String        @id @default(uuid())
+  sessionId   String
+  session     TableSession  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  tableNumber Int
+  orderItems  Json
+  subtotal    Int
+  orderStatus OrderStatus   @default(PENDING)
+  createdAt   DateTime      @default(now())
+
+  @@map("orders")
+}
